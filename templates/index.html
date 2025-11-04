@@ -1,22 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Enter Values</title>
-</head>
-<body>
-    <h1>Enter in Values for model to predict Total Estimate</h1>
-    <form method="POST">
-        <label>Hours Studied: <input type="text" name="studied_hours"></label><br>
-        <label>Previous Scores: <input type="number" id="prev_scores" name="prev_scores" min="0" max="100"></label><br>
-        <label>Extracurricular Activies:
-        <select name="Extracurricular Activies" id="EA">
-            <option value="Y">Yes</option>
-            <option value="N">No</option>
-        </select></label><br>
-        <label>Hours of Sleep: <input type="text" name="hours_slept"></label><br>
-        <label>Samples Practiced: <input type="text" name="samples"></label><br><br>
-        <button type="submit">Submit</button>
+  <head>
+    <meta charset="utf-8" />
+    <title>Linear Regression Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2rem; }
+      h1 { margin-bottom: 1rem; }
+      form { max-width: 520px; display: grid; gap: 14px; }
+      label { display: grid; gap: 6px; }
+      input, select { padding: .6rem; font-size: 1rem; }
+      button { padding: .7rem 1rem; cursor: pointer; }
+      .flash { color: #b00; margin-bottom: 1rem; }
+      small { color: #555; }
+    </style>
+  </head>
+  <body>
+    <h1>Enter values for the model to predict Performance Index</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Post to /predict just like the earlier app.py -->
+    <form action="{{ url_for('predict') }}" method="POST">
+      <label>
+        Hours Studied
+        <input type="number" name="Hours Studied" step="any" required />
+      </label>
+
+      <label>
+        Previous Scores
+        <input type="number" name="Previous Scores" min="0" max="100" step="any" required />
+      </label>
+
+      <label>
+        Extracurricular Activities
+        <select name="Extracurricular Activities" required>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <small>(encoded as 1 = Yes, 0 = No)</small>
+      </label>
+
+      <label>
+        Sleep Hours
+        <input type="number" name="Sleep Hours" step="any" required />
+      </label>
+
+      <label>
+        Sample Question Papers Practiced
+        <input type="number" name="Sample Question Papers Practiced" step="any" required />
+      </label>
+
+      <button type="submit">Get Result</button>
     </form>
-</body>
+  </body>
 </html>
