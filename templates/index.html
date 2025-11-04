@@ -7,11 +7,15 @@
 <body>
     <h1>Enter in Values for model to predict Total Estimate</h1>
     <form method="POST">
-        <label>Material Cost: <input type="text" name="val1"></label><br>
-        <label>Labor Cost: <input type="text" name="val2"></label><br>
-        <label>Profit Rate: <input type="text" name="val3"></label><br>
-        <label>Discount or Markup: <input type="text" name="val4"></label><br>
-        <label>Policy Reason: <input type="text" name="val5"></label><br><br>
+        <label>Hours Studied: <input type="text" name="studied_hours"></label><br>
+        <label>Previous Scores: <input type="number" id="prev_scores" name="prev_scores" min="0" max="100"></label><br>
+        <label>Extracurricular Activies:
+        <select name="Extracurricular Activies" id="EA">
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+        </select></label><br>
+        <label>Hours of Sleep: <input type="text" name="hours_slept"></label><br>
+        <label>Samples Practiced: <input type="text" name="samples"></label><br><br>
         <button type="submit">Submit</button>
     </form>
 </body>
