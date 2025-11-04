@@ -7,8 +7,8 @@ This is a simple Flask web application that demonstrates a basic form submission
 ## Features
 
 - Runs under a Python virtual environment  
-- Home page (`/`) with a form that accepts **5 user-entered values**  
-- A **Submit** button that redirects the user to a **results page** (`/results`)  
+- Home page (`/`) with a form that accepts 5 user-entered values
+- A Submit button that redirects the user to a results page (`/results`)  
 - Results page displays a success message (no backend processing yet)
 
 ---
@@ -25,5 +25,3 @@ flask_app/
 
 
 ---
-
-## 🛠️ Setup Instructions
