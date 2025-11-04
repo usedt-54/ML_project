@@ -14,7 +14,7 @@ This is a simple Flask web application that demonstrates a basic form submission
 ---
 
 ## Project Structure
-
+```
 flask_app/
 │
 ├── app.py # Main Flask application
@@ -22,6 +22,5 @@ flask_app/
 │ ├── index.html # Form input page (5 values)
 │ └── results.html # Results page after form submission
 └── requirements.txt # Installed dependencies
-
-
+```
 ---
