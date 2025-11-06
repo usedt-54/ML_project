@@ -19,18 +19,45 @@ def index():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-        # pull values in the same order as FEATURE_COLS
-        values = []
-        for name in FEATURE_COLS:
-            raw = request.form.get(name, "").strip()
-            if raw == "":
-                raise ValueError(f"Missing value for {name}")
-            values.append(float(raw))
+    if request.method == "GET":
+        return redirect(url_for("index"))
 
+    try:
+        # Map for Yes/No handling
+        yn_map = {"YES": 1.0, "Y": 1.0, "NO": 0.0, "N": 0.0, "1": 1.0, "0": 0.0}
+
+        # Use the same order your model was trained with
+        feature_order = FEATURE_COLS  # typically loaded from your saved bundle
+
+        # Collect raw strings from form
+        raw = {name: request.form.get(name, "").strip() for name in feature_order}
+
+        # Validate required fields
+        missing = [k for k, v in raw.items() if v == ""]
+        if missing:
+            raise ValueError(f"Missing value(s): {', '.join(missing)}")
+
+        # Convert to floats, special-casing the Yes/No field
+        values = []
+        for name in feature_order:
+            v = raw[name]
+            if name == "Extracurricular Activities":
+                mapped = yn_map.get(v.upper(), None)
+                if mapped is None:
+                    raise ValueError("Extracurricular Activities must be Yes/No or 1/0")
+                values.append(mapped)
+            else:
+                values.append(float(v))
+
+        # Predict
         X = np.array(values, dtype=float).reshape(1, -1)
         y_hat = pipeline.predict(X)[0]
 
         return redirect(url_for("results", pred=y_hat))
+
+    except Exception as e:
+        flash(f"Error: {e}")
+        return redirect(url_for("index"))
     
 @app.route("/results")
 def results():
