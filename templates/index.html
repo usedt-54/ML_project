@@ -16,7 +16,7 @@
     </style>
   </head>
   <body>
-    <h1>Enter values for the model to predict Performance Index</h1>
+    <h1>Enter values for the model to predict Tip Amount</h1>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -29,32 +29,47 @@
     <!-- Post to /predict just like the earlier app.py -->
     <form action="{{ url_for('predict') }}" method="POST">
       <label>
-        Hours Studied
-        <input type="number" name="Hours Studied" step="any" required />
+        Total Bill
+        <input type="number" name="total_bill" step="any" required />
       </label>
 
       <label>
-        Previous Scores
-        <input type="number" name="Previous Scores" min="0" max="100" step="any" required />
+        Gender
+        <select name="sex" required>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+        </select>
       </label>
 
       <label>
-        Extracurricular Activities
-        <select name="Extracurricular Activities" required>
+        Smoker
+        <select name="smoker" required>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
-        <small>(encoded as 1 = Yes, 0 = No)</small>
       </label>
 
       <label>
-        Sleep Hours
-        <input type="number" name="Sleep Hours" step="any" required />
+        Day
+        <select name="day" required>
+          <option value="Sun">Sunday</option>
+          <option value="Sat">Saturday</option>
+          <option value="Fri">Friday</option>
+          <option value="Thur">Thursday</option>
+        </select>
       </label>
 
       <label>
-        Sample Question Papers Practiced
-        <input type="number" name="Sample Question Papers Practiced" step="any" required />
+        Time
+        <select name="time" required>
+          <option value="Dinner">Dinner</option>
+          <option value="Lunch">Lunch</option>
+        </select>
+      </label>
+
+      <label>
+        Size
+        <input type="number" name="size" step="any" required />
       </label>
 
       <button type="submit">Get Result</button>

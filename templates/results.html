@@ -10,10 +10,35 @@
 
     {% if prediction is not none %}
       <p>Predicted value: <strong>{{ prediction|round(2) }}</strong></p>
-      <!-- or: {{ prediction|round(2) }} for 2 decimals -->
     {% else %}
       <p>No prediction to show.</p>
     {% endif %}
+
+    {% if metrics %}
+      <p>Model performance (from last training):</p>
+    <ul>
+      <li>Test R²:
+      <strong>
+        {% if metrics.get('r2_test') is not none %}
+          {{ metrics.get('r2_test')|round(4) }}
+        {% else %}
+          n/a
+        {% endif %}
+        </strong>
+      </li>
+    <li>CV R² (mean ± std):
+      <strong>
+        {% if metrics.get('cv_r2_mean') is not none %}
+          {{ metrics.get('cv_r2_mean')|round(4) }}
+        {% else %}n/a{% endif %}
+        {% if metrics.get('cv_r2_std') is not none %}
+          ± {{ metrics.get('cv_r2_std')|round(4) }}
+        {% endif %}
+      </strong>
+    </li>
+    </ul>
+    {% endif %}
+
 
     <a href="{{ url_for('index') }}">Back</a>
   </body>

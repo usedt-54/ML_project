@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from joblib import load
 import numpy as np
 import os
@@ -12,44 +12,67 @@ MODEL_PATH = "models/model.joblib"
 bundle = load(MODEL_PATH)
 pipeline = bundle["pipeline"]
 FEATURE_COLS = bundle["features"]
+METRICS = bundle.get("metrics", {})
 
 @app.route("/", methods=["GET"])
 def index():
+    # Render inputs using the model's expected feature names
     return render_template("index.html", feature_names=FEATURE_COLS)
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
     if request.method == "GET":
         return redirect(url_for("index"))
 
     try:
-        # Map for Yes/No handling
-        yn_map = {"YES": 1.0, "Y": 1.0, "NO": 0.0, "N": 0.0, "1": 1.0, "0": 0.0}
+        # Collect raw strings in the exact training order
+        raw = {name: (request.form.get(name, "") or "").strip() for name in FEATURE_COLS}
 
-        # Use the same order your model was trained with
-        feature_order = FEATURE_COLS  # typically loaded from your saved bundle
-
-        # Collect raw strings from form
-        raw = {name: request.form.get(name, "").strip() for name in feature_order}
-
-        # Validate required fields
+        # Required fields check
         missing = [k for k, v in raw.items() if v == ""]
         if missing:
             raise ValueError(f"Missing value(s): {', '.join(missing)}")
 
-        # Convert to floats, special-casing the Yes/No field
+        # Tiny categorical guards to match how the model was trained
+        def encode_day(val: str) -> float:
+            # Weekend flag: Sat/Sun -> 1, else -> 0
+            first3 = val[:3].lower()
+            return 1.0 if first3 in {"sat", "sun"} else 0.0
+
         values = []
-        for name in feature_order:
+        for name in FEATURE_COLS:
             v = raw[name]
-            if name == "Extracurricular Activities":
-                mapped = yn_map.get(v.upper(), None)
-                if mapped is None:
-                    raise ValueError("Extracurricular Activities must be Yes/No or 1/0")
-                values.append(mapped)
+            lname = name.lower()
+            vup = v.upper()
+
+            if lname == "sex":
+                if vup in {"MALE", "M", "1"}:
+                    values.append(1.0)
+                elif vup in {"FEMALE", "F", "0"}:
+                    values.append(0.0)
+                else:
+                    raise ValueError("sex must be Male/Female (or 1/0)")
+            elif lname == "smoker":
+                if vup in {"YES", "Y", "1"}:
+                    values.append(1.0)
+                elif vup in {"NO", "N", "0"}:
+                    values.append(0.0)
+                else:
+                    raise ValueError("smoker must be Yes/No (or 1/0)")
+            elif lname == "time":
+                if vup in {"DINNER", "1"}:
+                    values.append(1.0)
+                elif vup in {"LUNCH", "0"}:
+                    values.append(0.0)
+                else:
+                    raise ValueError("time must be Dinner/Lunch (or 1/0)")
+            elif lname == "day":
+                values.append(encode_day(v))
             else:
+                # numeric fields like total_bill, size
                 values.append(float(v))
 
-        # Predict
+        # Predict with NumPy array
         X = np.array(values, dtype=float).reshape(1, -1)
         y_hat = pipeline.predict(X)[0]
 
@@ -58,11 +81,11 @@ def predict():
     except Exception as e:
         flash(f"Error: {e}")
         return redirect(url_for("index"))
-    
+
 @app.route("/results")
 def results():
     pred = request.args.get("pred", type=float)
-    return render_template("results.html", prediction=pred)
+    return render_template("results.html", prediction=pred, metrics=METRICS)
 
 if __name__ == "__main__":
     app.run(debug=True)
