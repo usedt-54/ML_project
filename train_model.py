@@ -36,7 +36,7 @@ def main():
     # weekend flag: Sat/Sun=1, Mon–Fri=0
     df["day"] = (
         df["day"].astype(str).str[:3].str.lower()
-        .map({"sat": 1.0, "sun": 1.0, "mon": 0.0, "tue": 0.0, "wed": 0.0, "thu": 0.0, "fri": 0.0})
+        .map({"sat": 3.0, "sun": 4.0, "thu": 1.0, "fri": 2.0})
     )
 
     # Validate encodings
@@ -57,7 +57,7 @@ def main():
         ("linreg", LinearRegression())
     ])
 
-    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=42)
+    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.20, random_state=42)
     pipe.fit(X_tr, y_tr)
 
     # Metrics
@@ -66,7 +66,7 @@ def main():
     print(f"Test R^2: {r2:.4f}")
 
     # 5-fold CV
-    cv = KFold(n_splits=5, shuffle=True, random_state=42)
+    cv = KFold(n_splits=10, shuffle=True, random_state=42)
     cv_scores = cross_val_score(pipe, X, y, cv=cv, scoring="r2")
     print(f"CV R^2: mean={cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
 

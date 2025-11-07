@@ -33,12 +33,6 @@ def predict():
         if missing:
             raise ValueError(f"Missing value(s): {', '.join(missing)}")
 
-        # Tiny categorical guards to match how the model was trained
-        def encode_day(val: str) -> float:
-            # Weekend flag: Sat/Sun -> 1, else -> 0
-            first3 = val[:3].lower()
-            return 1.0 if first3 in {"sat", "sun"} else 0.0
-
         values = []
         for name in FEATURE_COLS:
             v = raw[name]
@@ -67,7 +61,16 @@ def predict():
                 else:
                     raise ValueError("time must be Dinner/Lunch (or 1/0)")
             elif lname == "day":
-                values.append(encode_day(v))
+                if vup in {"THUR", "1"}:
+                    values.append(1.0)
+                elif vup in {"FRI", "2"}:
+                    values.append(2.0)
+                elif vup in {"SAT", "3"}:
+                    values.append(3.0)
+                elif vup in {"SUN", "4"}:
+                    values.append(4.0)
+                else:
+                    raise ValueError("time must be Dinner/Lunch (or 1/0)")
             else:
                 # numeric fields like total_bill, size
                 values.append(float(v))
