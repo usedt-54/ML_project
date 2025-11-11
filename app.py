@@ -16,7 +16,6 @@ METRICS = bundle.get("metrics", {})
 
 @app.route("/", methods=["GET"])
 def index():
-    # Render inputs using the model's expected feature names
     return render_template("index.html", feature_names=FEATURE_COLS)
 
 @app.route("/predict", methods=["GET", "POST"])
@@ -32,7 +31,8 @@ def predict():
         missing = [k for k, v in raw.items() if v == ""]
         if missing:
             raise ValueError(f"Missing value(s): {', '.join(missing)}")
-
+        
+        # transform strings into numerical values
         values = []
         for name in FEATURE_COLS:
             v = raw[name]
@@ -72,7 +72,6 @@ def predict():
                 else:
                     raise ValueError("time must be Dinner/Lunch (or 1/0)")
             else:
-                # numeric fields like total_bill, size
                 values.append(float(v))
 
         # Predict with NumPy array

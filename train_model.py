@@ -20,7 +20,7 @@ def main():
     if missing:
         raise ValueError(f"Missing columns in CSV: {missing}")
 
-    # --- Encode categoricals to numeric (matches app.py mapping) ---
+    # Encode categoricals to numeric
     df["sex"] = (
         df["sex"].astype(str).str.strip().str.upper()
         .map({"MALE": 1.0, "M": 1.0, "FEMALE": 0.0, "F": 0.0})
@@ -33,7 +33,7 @@ def main():
         df["time"].astype(str).str.strip().str.upper()
         .map({"DINNER": 1.0, "LUNCH": 0.0})
     )
-    # weekend flag: Sat/Sun=1, Mon–Fri=0
+    # weekend flag: Saturday = 3, Sunday = 4, Thursday = 1, Friday = 2
     df["day"] = (
         df["day"].astype(str).str[:3].str.lower()
         .map({"sat": 3.0, "sun": 4.0, "thu": 1.0, "fri": 2.0})
@@ -66,7 +66,7 @@ def main():
     print(f"Test R^2: {r2:.4f}")
 
     # 5-fold CV
-    cv = KFold(n_splits=10, shuffle=True, random_state=42)
+    cv = KFold(n_splits=5, shuffle=True, random_state=42)
     cv_scores = cross_val_score(pipe, X, y, cv=cv, scoring="r2")
     print(f"CV R^2: mean={cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
 
@@ -76,7 +76,6 @@ def main():
         "cv_r2_mean": float(cv_scores.mean()),
         "cv_r2_std": float(cv_scores.std()),
     }
-
     dump({
         "pipeline": pipe,
         "features": FEATURE_COLS,
