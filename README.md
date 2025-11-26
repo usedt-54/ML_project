@@ -33,7 +33,7 @@ ML_project/
 ```
 ---
 
----
+```
 ## How to use
 
 1. Create and Activate Virtual Enviornment
@@ -47,4 +47,4 @@ ML_project/
         flask run
 5. Go to Server
         Flask should give you a website url, something like http://127.0.0.1:5000, GO there and you should be able to use the app
----
+```
