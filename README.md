@@ -31,4 +31,18 @@ ML_project/
 └── train_model.py # Train LinReg Model
 
 ```
+
+## How to use
+
+1. Create and Activate Virtual Enviornment
+        python -m venv .venv
+        .venv/bin/activate
+2. Install Dependencies
+        pip install -r requirements.txt
+3. Set Enviornment Variables
+        $env:FLASK_APP="app.py"
+4. Start Server
+        flask run
+5. Go to Server
+        Flask should give you a website url, something like http://127.0.0.1:5000, GO there and you should be able to use the app
 ---
