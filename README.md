@@ -29,13 +29,10 @@ ML_project/
 │ └── results.html # Results page after form submission
 ├── requirements.txt # Installed dependencies
 └── train_model.py # Train LinReg Model
-
 ```
 ---
-
-```
 ## How to use
-
+```
 1. Create and Activate Virtual Enviornment
         python -m venv .venv
         .venv/bin/activate
