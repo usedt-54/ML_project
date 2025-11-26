@@ -31,7 +31,9 @@ ML_project/
 └── train_model.py # Train LinReg Model
 
 ```
+---
 
+---
 ## How to use
 
 1. Create and Activate Virtual Enviornment
